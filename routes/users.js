@@ -19,18 +19,18 @@ router.post("/", async (req, res) => {
 
 		await new User({ ...req.body, password: hashPassword }).save();
 
-		// user = await User.findOne({ email: req.body.email });
+		const user2 = await User.findOne({ email: req.body.email });
 
-		// if(user)
-		// {
-		// 	const token = user.generateAuthToken();
-		// 	res.status(201).send({ data: token, message: "User created successfully and token sent" });
-		// }
-		// else{
-		// 	res.status(201).send({ message: "User created successfully" });
-		// }
+		if(user2)
+		{
+			const token = user.generateAuthToken();
+			res.status(201).send({ data: token, message: "User created successfully and token sent" });
+		}
+		else{
+			res.status(201).send({ message: "User created successfully" });
+		}
 		
-		res.status(201).send({ message: "User created successfully" });
+		//res.status(201).send({ message: "User created successfully" });
 	} catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
 	}
