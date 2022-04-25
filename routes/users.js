@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
 		if(user2)
 		{
-			const token = user.generateAuthToken();
+			const token = user2.generateAuthToken();
 			res.status(201).send({ data: token, message: "User created successfully and token sent" });
 		}
 		else{
