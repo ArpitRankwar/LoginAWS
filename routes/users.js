@@ -21,9 +21,15 @@ router.post("/", async (req, res) => {
 
 		user = await User.findOne({ email: req.body.email });
 
-		const token = user.generateAuthToken();
+		if(user)
+		{
+			const token = user.generateAuthToken();
+			res.status(201).send({ data: token, message: "User created successfully and token sent" });
+		}
+		else{
+			res.status(201).send({ message: "User created successfully" });
+		}
 		
-		res.status(201).send({ data: token, message: "User created successfully" });
 	} catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
 	}
