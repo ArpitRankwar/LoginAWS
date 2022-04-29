@@ -28,6 +28,7 @@
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.2",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.15",
     "react-dropdown": "^1.9.2",
     "react-google-login": "^5.2.2",
