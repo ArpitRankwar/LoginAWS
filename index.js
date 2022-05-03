@@ -67,7 +67,7 @@ app.get("/StudentDetails", async (req, res) => {
         }
         return res.status(201).send({
           result: result,
-          message: 'Done',
+          message: result,
         }); 
       }
     );
