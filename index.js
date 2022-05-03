@@ -60,7 +60,7 @@ app.get("/StudentDetails", async (req, res) => {
 
     db.query(
       "SELECT * FROM Student_Details WHERE Teacher_ID = ? and Status>0 ",
-      [Tacher_ID],
+      [Teacher_ID],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
