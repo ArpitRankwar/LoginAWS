@@ -59,7 +59,7 @@ app.post("/SignUp", async (req, res) => {
           return res.status(400).send({ message: "Email ID or Phone Number Already Exists" });
         }
         db.query(
-          "INSERT INTO users (Teacher_Name, UserName, Passwords) VALUES (?,?,?)",
+          "INSERT INTO Teacher_Details (Teacher_Name, UserName, Passwords) VALUES (?,?,?)",
           [Teacher_Name, Name, Password],
           (err, newuser) => {
             if (err) return res.status(400).send({ message: "Not Possible" });
