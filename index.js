@@ -65,10 +65,7 @@ app.get("/StudentDetails", async (req, res) => {
         if (err) {
           return res.status(400).send({ error: err });
         }
-        return res.status(201).send({
-          result: result,
-          message: result,
-        }); 
+        return res.status(201).send(result); 
       }
     );
   } catch (error) {
