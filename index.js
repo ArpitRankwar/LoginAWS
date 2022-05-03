@@ -65,7 +65,7 @@ app.post("/LogIn", async (req, res) => {
         }
         return res.status(201).send({
           result: result[0].username,
-          message: "logged in successfully",
+          message: result,
         }); 
       }
     );
