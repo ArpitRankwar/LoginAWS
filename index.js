@@ -59,7 +59,7 @@ app.get("/StudentDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
 
     db.query(
-      "SELECT * FROM Student_Details WHERE Teacher_ID = ? and Statuss>0 ",
+      "SELECT * FROM Student_Details WHERE Teacher_ID = ?",
       [Teacher_ID],
       (err, result) => {
         if (err) {
