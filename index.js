@@ -41,7 +41,40 @@ const validate2 = (data) => {
   });
   return schema.validate(data);
 };
+const validate3 = (data) => {
+  const schema = Joi.object({
+    username: Joi.string().label("Teacher_ID")
+  });
+  return schema.validate(data);
+};
 // routes
+app.get("/StudentDetails", async (req, res) => {
+  try {
+    const { error } = validate3(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const Teacher_ID = req.body.Teacher_ID;
+
+    db.query(
+      "SELECT * FROM Student_Details WHERE Teacher_ID = ? and Status>0 ",
+      [Tacher_ID],
+      (err, result) => {
+        if (err) {
+          return res.status(400).send({ error: err });
+        }
+        return res.status(201).send({
+          result: result,
+          message: 'Done',
+        }); 
+      }
+    );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
 app.post("/LogIn", async (req, res) => {
   try {
     const { error } = validate2(req.body);
