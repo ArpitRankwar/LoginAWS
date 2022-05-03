@@ -29,7 +29,7 @@ app.use(cors());
 const validate1 = (data) => {
   const schema = Joi.object({
     Name: Joi.string().required().label("Teacher_Name"),
-    username: Joi.string().required().label("User_Name"),
+    username: Joi.string().required().label("Name"),
     password: Joi.string().required().label("Password"),
   });
   return schema.validate(data);
