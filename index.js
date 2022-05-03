@@ -96,10 +96,7 @@ app.post("/LogIn", async (req, res) => {
         if (!result.length) {
           return res.status(400).send({ message: "Invalid Email or Phone Number" });
         }
-        return res.status(201).send({
-          result: result[0].username,
-          message: result,
-        }); 
+        return res.status(201).send(result); 
       }
     );
   } catch (error) {
