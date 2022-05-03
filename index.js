@@ -28,9 +28,9 @@ app.use(express.json());
 app.use(cors());
 const validate1 = (data) => {
   const schema = Joi.object({
-    Teacher_Name: Joi.string().label("Teacher_Name"),
-    Name: Joi.string().label("Name"),
-    Password: Joi.string().label("Password"),
+    Teacher_Name: Joi.string().required().label("Teacher_Name"),
+    Name: Joi.string().required().label("Name"),
+    Password: Joi.string().required().label("Password"),
   });
   return schema.validate(data);
 };
@@ -44,9 +44,9 @@ app.post("/SignUp", async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const username = req.body.username;
-    const password = req.body.password;
-    const Teacher_Name = req.body.Name;
+    const Name = req.body.Name;
+    const Password = req.body.Password;
+    const Teacher_Name = req.body.Teacher_Name;
 
     db.query(
       "SELECT * FROM Teacher_Details WHERE UserName = ?",
@@ -64,7 +64,7 @@ app.post("/SignUp", async (req, res) => {
           (err, newuser) => {
             if (err) return res.status(400).send({ message: "Not Possible" });
               return res.status(201).send({
-                result: username,
+                result: Name,
                 message: "logged in successfully",
               });
           }
