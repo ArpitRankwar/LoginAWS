@@ -28,9 +28,9 @@ app.use(express.json());
 app.use(cors());
 const validate1 = (data) => {
   const schema = Joi.object({
-    Name: Joi.string().required().label("Teacher_Name"),
-    username: Joi.string().required().label("Name"),
-    password: Joi.string().required().label("Password"),
+    Teacher_Name: Joi.string().required().label("Teacher_Name"),
+    Name: Joi.string().required().label("Name"),
+    Password: Joi.string().required().label("Password"),
   });
   return schema.validate(data);
 };
@@ -50,7 +50,7 @@ app.post("/SignUp", async (req, res) => {
 
     db.query(
       "SELECT * FROM Teacher_Details WHERE UserName = ?",
-      [username],
+      [Name],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
@@ -60,7 +60,7 @@ app.post("/SignUp", async (req, res) => {
         }
         db.query(
           "INSERT INTO users (Teacher_Name, UserName, Passwords) VALUES (?,?,?)",
-          [Teacher_Name, username, password],
+          [Teacher_Name, Name, Password],
           (err, newuser) => {
             if (err) return res.status(400).send({ message: "Not Possible" });
               return res.status(201).send({
