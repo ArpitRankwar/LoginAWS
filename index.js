@@ -34,8 +34,42 @@ const validate1 = (data) => {
   });
   return schema.validate(data);
 };
-
+const validate2 = (data) => {
+  const schema = Joi.object({
+    username: Joi.string().label("username"),
+    password: Joi.string().label("password"),
+  });
+  return schema.validate(data);
+};
 // routes
+app.post("/LogIn", async (req, res) => {
+  try {
+    const { error } = validate2(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const username = req.body.username;
+    const password = req.body.password;
+
+    db.query(
+      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=? ",
+      [username,password],
+      (err, result) => {
+        if (err) {
+          return res.status(400).send({ error: err });
+        }
+        if (!result.length) {
+          return res.status(400).send({ message: "Invalid Email or Phone Number" });
+        }
+         return(1); 
+      }
+    );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
 app.post("/SignUp", async (req, res) => {
   try {
     const { error } = validate1(req.body);
