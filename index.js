@@ -43,7 +43,7 @@ const validate2 = (data) => {
 };
 const validate3 = (data) => {
   const schema = Joi.object({
-    username: Joi.string().label("Teacher_ID")
+    Teacher_ID: Joi.string().label("Teacher_ID")
   });
   return schema.validate(data);
 };
@@ -57,7 +57,7 @@ app.get("/StudentDetails", async (req, res) => {
     }
 
     const Teacher_ID = req.body.Teacher_ID;
-
+  
     db.query(
       "SELECT * FROM Student_Details WHERE Teacher_ID = ?",
       [Teacher_ID],
