@@ -48,7 +48,7 @@ const validate3 = (data) => {
   return schema.validate(data);
 };
 // routes
-app.get("/StudentDetails", async (req, res) => {
+app.post("/StudentDetails", async (req, res) => {
   try {
     const { error } = validate3(req.body);
 
