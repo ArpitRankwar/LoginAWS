@@ -47,7 +47,37 @@ const validate3 = (data) => {
   });
   return schema.validate(data);
 };
+const validate4 = (data) => {
+  const schema = Joi.object({
+    Product_ID: Joi.string().label("Product_ID")
+  });
+  return schema.validate(data);
+};
 // routes
+app.post("/ProductDetails", async (req, res) => {
+  try {
+    const { error } = validate4(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const Product_ID = req.body.Product_ID;
+  
+    db.query(
+      "SELECT * FROM Product_Details WHERE Product_ID = ?",
+      [Product_ID],
+      (err, result) => {
+        if (err) {
+          return res.status(400).send({ error: err });
+        }
+        return res.status(201).send(result); 
+      }
+    );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
 app.post("/StudentDetails", async (req, res) => {
   try {
     const { error } = validate3(req.body);
