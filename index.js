@@ -64,7 +64,39 @@ const validate5 = (data) => {
   });
   return schema.validate(data);
 };
+const validate6 = (data) => {
+  const schema = Joi.object({
+    Student_ID: Joi.string().label("Student_ID"),
+    Class_ID: Joi.string().label("Class_ID"),
+  });
+  return schema.validate(data);
+};
+
 // routes
+app.post("/extractclass", async (req, res) => {
+  try {
+    const { error } = validate6(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+    const Student_ID = req.body.Student_ID;
+    const Class_ID = req.body.Class_ID;
+      db.query(
+        "Select* FROM Student_Classes WHERE Student_ID = ? and Class_ID = ?",
+        [Student_ID,Class_ID],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
+          return res.status(201).send(result); 
+        }
+      );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
 app.post("/updateDetails", async (req, res) => {
   try {
     const { error } = validate5(req.body);
