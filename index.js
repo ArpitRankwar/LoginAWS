@@ -86,9 +86,7 @@ app.post("/updateDetails", async (req, res) => {
           if (err) {
             return res.status(400).send({ error: err });
           }
-          return res.status(201).send({
-            result:result,
-            message:"Deleted Successfully"}); 
+          return res.status(201).send(result); 
         }
       );
     }
@@ -100,9 +98,7 @@ app.post("/updateDetails", async (req, res) => {
           if (err) {
             return res.status(400).send({ error: err });
           }
-          return res.status(201).send({
-            result:result,
-            message:"Added Successfully"}); 
+          return res.status(201).send(result); 
         }
       );
     }
