@@ -87,18 +87,23 @@ app.post("/extractclass", async (req, res) => {
           if (err) {
             return res.status(400).send({ error: err });
           }
-          else{
-            "Update Student_Details set Delivered_Classes=? WHERE Student_ID = ?",
-            [result.length,Student_ID],
+          var a=result.length;
+        db.query(  
+        "Update Student_Details set Delivered_Classes=? WHERE Student_ID = ?",
+        [a,Student_ID],
+        
         (err, result) => {
           if (err) {
             return res.status(400).send({ error: err });
           }
+          console.log(a);
+        }
+        );
           return res.status(201).send(result); 
           }
-          }
           
-        }
+          
+        
       );
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
