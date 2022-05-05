@@ -49,7 +49,11 @@ const validate3 = (data) => {
 };
 const validate4 = (data) => {
   const schema = Joi.object({
-    Product_ID: Joi.string().label("Product_ID")
+    Product_ID: Joi.string().label("Product_ID"),
+    Student_ID: Joi.string().label("Student_ID"),
+    Class_ID: Joi.string().label("Class_ID"),
+    Date_Time: Joi.string().label("Date_Time"),
+    status: Joi.string().label("status"),
   });
   return schema.validate(data);
 };
@@ -63,17 +67,34 @@ app.post("/ProductDetails", async (req, res) => {
     }
 
     const Product_ID = req.body.Product_ID;
-  
-    db.query(
-      "SELECT * FROM Product_Details WHERE Product_ID = ?",
-      [Product_ID],
-      (err, result) => {
-        if (err) {
-          return res.status(400).send({ error: err });
+    const Student_ID = req.body.Product_ID;
+    const Class_ID = req.body.Product_ID;
+    const Date_Time = req.body.Product_ID;
+    const status=req.body.status;
+    if(status=0){
+      db.query(
+        "DELETE FROM Student_Classes WHERE Product_ID = ? and Student_ID = ? and Class_ID = ?",
+        [Product_ID,Student_ID,Class_ID],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
+          return res.status(201).send({message:"Deleted Successfully"}); 
         }
-        return res.status(201).send(result); 
-      }
-    );
+      );
+    }
+    if(status=1){
+      db.query(
+        "INSERT into Student_Classes (Product_ID,Student_ID,Class_ID,Date_Time) Values(?,?,?,?)",
+        [Product_ID,Student_ID,Class_ID,Date_Time],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
+          return res.status(201).send({message:"Added Successfully"}); 
+        }
+      );
+    }
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
   }
