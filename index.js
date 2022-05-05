@@ -60,7 +60,7 @@ const validate5 = (data) => {
     Student_ID: Joi.string().label("Student_ID"),
     Class_ID: Joi.string().label("Class_ID"),
     Date_Time: Joi.string().label("Date_Time"),
-    status: Joi.string().label("status"),
+    status: Joi.label("status"),
   });
   return schema.validate(data);
 };
