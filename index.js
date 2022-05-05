@@ -182,8 +182,8 @@ app.post("/StudentDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
   
     db.query(
-      "SELECT * FROM Student_Details WHERE Teacher_ID = ?",
-      [Teacher_ID],
+      "SELECT * FROM Student_Details WHERE Teacher_ID = ? and and Statuss<>?",
+      [Teacher_ID,0],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
@@ -207,8 +207,8 @@ app.post("/LogIn", async (req, res) => {
     const password = req.body.password;
 
     db.query(
-      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=? and Statuss<>? ",
-      [username,password,0],
+      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=?  ",
+      [username,password],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
