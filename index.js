@@ -87,7 +87,17 @@ app.post("/extractclass", async (req, res) => {
           if (err) {
             return res.status(400).send({ error: err });
           }
+          else{
+            "Update Student_Details set Delivered_Classes=? WHERE Student_ID = ?",
+            [result.length,Student_ID],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
           return res.status(201).send(result); 
+          }
+          }
+          
         }
       );
   } catch (error) {
@@ -197,8 +207,8 @@ app.post("/LogIn", async (req, res) => {
     const password = req.body.password;
 
     db.query(
-      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=? ",
-      [username,password],
+      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=? and Statuss<>? ",
+      [username,password,0],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
