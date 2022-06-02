@@ -15,7 +15,7 @@ const db = mysql.createConnection({
   host: "wiinblock.chtpsrziaxhj.ap-south-1.rds.amazonaws.com",
   user: "admin",
   password: "Wiingy123",
-  database: "TP",
+  database: "WiingyData",
 });
 
 db.connect(function (err) {
@@ -60,6 +60,8 @@ const validate5 = (data) => {
     Student_ID: Joi.string().label("Student_ID"),
     Class_ID: Joi.string().label("Class_ID"),
     Date_Time: Joi.string().label("Date_Time"),
+    Teacher_ID: Joi.string().label("Teacher_ID"),
+    Quiz_Score: Joi.string().label("Quiz_Score"),
     status: Joi.string().label("status"),
   });
   return schema.validate(data);
@@ -67,6 +69,15 @@ const validate5 = (data) => {
 const validate6 = (data) => {
   const schema = Joi.object({
     Student_ID: Joi.string().label("Student_ID"),
+  });
+  return schema.validate(data);
+};
+const validate7 = (data) => {
+  const schema = Joi.object({
+    Product_ID: Joi.string().label("Product_ID"),
+    Student_ID: Joi.string().label("Student_ID"),
+    Class_ID: Joi.string().label("Class_ID"),
+    status: Joi.string().label("status"),
   });
   return schema.validate(data);
 };
@@ -81,7 +92,7 @@ app.post("/extractclass", async (req, res) => {
     }
     const Student_ID = req.body.Student_ID;
       db.query(
-        "Select* FROM Student_Classes WHERE Student_ID = ?",
+        "Select* FROM Student_Classes WHERE StudentID = ?",
         [Student_ID],
         (err, result) => {
           if (err) {
@@ -89,7 +100,7 @@ app.post("/extractclass", async (req, res) => {
           }
           var a=result.length;
         db.query(  
-        "Update Student_Details set Delivered_Classes=? WHERE Student_ID = ?",
+        "Update course_sell set Delivered_Classes=? WHERE ChildID= ?",
         [a,Student_ID],
         
         (err, result) => {
@@ -102,9 +113,38 @@ app.post("/extractclass", async (req, res) => {
           return res.status(201).send(result); 
           }
           
-          
+
         
       );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+app.post("/updateassignDetails", async (req, res) => {
+  try {
+    const { error } = validate7(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const Product_ID = req.body.Product_ID;
+    const Student_ID = req.body.Student_ID;
+    const Class_ID = req.body.Class_ID;
+    const status=req.body.status;
+    if(status==="true"){
+      db.query(
+        "UPDATE Student_Classes set Assignment_Status=? where (ClassID=? and ProductID=? and StudentID=?)",
+        [1,Class_ID,Product_ID,Student_ID],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
+          return res.status(201).send(result); 
+        }
+      );
+    }
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
   }
@@ -122,23 +162,13 @@ app.post("/updateDetails", async (req, res) => {
     const Student_ID = req.body.Student_ID;
     const Class_ID = req.body.Class_ID;
     const Date_Time = req.body.Date_Time;
+    const Teacher_ID = req.body.Teacher_ID;
+    const Quiz_Score= req.body.Quiz_Score;
     const status=req.body.status;
-    if(status==="false"){
-      db.query(
-        "DELETE FROM Student_Classes WHERE Product_ID = ? and Student_ID = ? and Class_ID = ?",
-        [Product_ID,Student_ID,Class_ID],
-        (err, result) => {
-          if (err) {
-            return res.status(400).send({ error: err });
-          }
-          return res.status(201).send(result); 
-        }
-      );
-    }
     if(status==="true"){
       db.query(
-        "INSERT into Student_Classes (Product_ID,Student_ID,Class_ID,Date_Time) Values(?,?,?,?)",
-        [Product_ID,Student_ID,Class_ID,Date_Time],
+        "INSERT into Student_Classes (ClassID,ProductID,StudentID,Quiz_Score,Date_Time,TeacherID) Values(?,?,?,?,?,?)",
+        [Class_ID,Product_ID,Student_ID,Quiz_Score,Date_Time,Teacher_ID],
         (err, result) => {
           if (err) {
             return res.status(400).send({ error: err });
@@ -163,7 +193,7 @@ app.post("/ProductDetails", async (req, res) => {
     const Product_ID = req.body.Product_ID;
   
     db.query(
-      "SELECT * FROM Product_Details WHERE Product_ID = ?",
+      "SELECT class_product_details.ClassID, class_details.Class_Name,class_details.PPT_Link,class_details.Quiz_Link FROM class_product_details INNER JOIN class_details ON class_product_details.ClassID=class_details.ClassID WHERE class_product_details.ProductID=?",
       [Product_ID],
       (err, result) => {
         if (err) {
@@ -187,8 +217,8 @@ app.post("/StudentDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
   
     db.query(
-      "SELECT * FROM Student_Details WHERE Teacher_ID = ?  and Statuss<>?",
-      [Teacher_ID,0],
+      "SELECT course_sell.ChildID, kiddetails.ChildName,course_sell.ProductID,course_sell.Course_Name,kiddetails.ChildGrade,course_sell.Max_Classes,course_sell.Delivered_Classes FROM course_sell INNER JOIN kiddetails ON course_sell.ChildID=kiddetails.ChildID WHERE course_sell.TeacherID=?",
+      [Teacher_ID],
       (err, result) => {
         if (err) {
           return res.status(400).send({ error: err });
@@ -212,7 +242,7 @@ app.post("/LogIn", async (req, res) => {
     const password = req.body.password;
 
     db.query(
-      "SELECT * FROM Teacher_Details WHERE UserName = ? and Passwords=?  ",
+      "SELECT * FROM teacher_details WHERE username = ? and passwordt=?  ",
       [username,password],
       (err, result) => {
         if (err) {
@@ -241,7 +271,7 @@ app.post("/SignUp", async (req, res) => {
     const Teacher_Name = req.body.Teacher_Name;
 
     db.query(
-      "SELECT * FROM Teacher_Details WHERE UserName = ?",
+      "SELECT * FROM Teacher_Details WHERE username = ?",
       [Name],
       (err, result) => {
         if (err) {
@@ -251,7 +281,7 @@ app.post("/SignUp", async (req, res) => {
           return res.status(400).send({ message: "Email ID or Phone Number Already Exists" });
         }
         db.query(
-          "INSERT INTO Teacher_Details (Teacher_Name, UserName, Passwords) VALUES (?,?,?)",
+          "INSERT INTO Teacher_Details (Teacher_Name, username, passwordt) VALUES (?,?,?)",
           [Teacher_Name, Name, Password],
           (err, newuser) => {
             if (err) return res.status(400).send({ message: "Not Possible" });
