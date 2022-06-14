@@ -193,7 +193,7 @@ app.post("/ProductDetails", async (req, res) => {
     const Product_ID = req.body.Product_ID;
   
     db.query(
-      "SELECT class_product_details.ClassID, class_details.Class_Name,class_details.PPT_Link,class_details.Quiz_Link FROM class_product_details INNER JOIN class_details ON class_product_details.ClassID=class_details.ClassID WHERE class_product_details.ProductID=?",
+      "SELECT class_product_details.ClassID, class_details.Class_Name,class_details.PPT_Link,class_details.Quiz_Link FROM class_product_details INNER JOIN class_details ON class_product_details.ClassID=class_details.ClassID WHERE class_product_details.ProductID=? order by class_product_details.SINO",
       [Product_ID],
       (err, result) => {
         if (err) {
