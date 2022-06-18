@@ -12,7 +12,7 @@ const Joi = require("joi");
 /*connection();*/
 
 const db = mysql.createConnection({
-  host: "wiinblock.chtpsrziaxhj.ap-south-1.rds.amazonaws.com",
+  host: "wiingyadmin.chtpsrziaxhj.ap-south-1.rds.amazonaws.com",
   user: "admin",
   password: "Wiingy123",
   database: "WiingyData",
