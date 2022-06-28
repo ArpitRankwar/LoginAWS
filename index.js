@@ -63,6 +63,7 @@ const validate5 = (data) => {
     Teacher_ID: Joi.string().label("Teacher_ID"),
     Quiz_Score: Joi.string().label("Quiz_Score"),
     status: Joi.string().label("status"),
+    Entry_Time: Joi.string().label("Entry_Time"),
   });
   return schema.validate(data);
 };
@@ -81,6 +82,46 @@ const validate7 = (data) => {
   });
   return schema.validate(data);
 };
+
+const validate8 = (data) => {
+  const schema = Joi.object({
+    TeacherID: Joi.string().label("TeacherID"),
+    ChildID: Joi.string().label("ChildID"),
+    CourseID: Joi.string().label("CourseID"),
+    Joining_Date: Joi.string().label("Joining_Date"),
+    Joining_Time: Joi.string().label("Joining_Time"),
+  });
+  return schema.validate(data);
+};
+
+
+app.post("/meetlog", async (req, res) => {
+  try {
+    const { error } = validate8(req.body);
+
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const TeacherID = req.body.TeacherID;
+    const ChildID = req.body.ChildID;
+    const CourseID = req.body.CourseID;
+    const Joining_Date = req.body.Joining_Date;
+    const Joining_Time = req.body.Joining_Time;
+      db.query(
+        "insert into Teacher_Meet_Logs values(?,?,?,?,?)",
+        [TeacherID,CourseID,ChildID,Joining_Date,Joining_Time],
+        (err, result) => {
+          if (err) {
+            return res.status(400).send({ error: err });
+          }
+          return res.status(201).send(result); 
+        }
+      );
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
 
 // routes
 app.post("/extractclass", async (req, res) => {
@@ -165,10 +206,11 @@ app.post("/updateDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
     const Quiz_Score= req.body.Quiz_Score;
     const status=req.body.status;
+    const Entry_Time=req.body.ENtry_Time;
     if(status==="true"){
       db.query(
-        "INSERT into Student_Classes (ClassID,ProductID,StudentID,Quiz_Score,Date_Time,TeacherID) Values(?,?,?,?,?,?)",
-        [Class_ID,Product_ID,Student_ID,Quiz_Score,Date_Time,Teacher_ID],
+        "INSERT into Student_Classes (ClassID,ProductID,StudentID,Quiz_Score,Date_Time,TeacherID,Entry_Time) Values(?,?,?,?,?,?,?)",
+        [Class_ID,Product_ID,Student_ID,Quiz_Score,Date_Time,Teacher_ID,Entry_Time],
         (err, result) => {
           if (err) {
             return res.status(400).send({ error: err });
@@ -217,7 +259,7 @@ app.post("/StudentDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
   
     db.query(
-      "SELECT course_sell.ChildID, kiddetails.ChildName,course_sell.ProductID,course_sell.Course_Name,kiddetails.ChildGrade,course_sell.Max_Classes,course_sell.Delivered_Classes FROM course_sell INNER JOIN kiddetails ON course_sell.ChildID=kiddetails.ChildID WHERE course_sell.TeacherID=?",
+      "SELECT course_sell.ChildID, kiddetails.ChildName,course_sell.ProductID,course_sell.Course_Name,kiddetails.ChildGrade,course_sell.Max_Classes,course_sell.Delivered_Classes,kiddetails.MeetLink,course_sell.ProductID FROM course_sell INNER JOIN kiddetails ON course_sell.ChildID=kiddetails.ChildID WHERE course_sell.TeacherID=?",
       [Teacher_ID],
       (err, result) => {
         if (err) {
