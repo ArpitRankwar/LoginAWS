@@ -206,7 +206,7 @@ app.post("/updateDetails", async (req, res) => {
     const Teacher_ID = req.body.Teacher_ID;
     const Quiz_Score= req.body.Quiz_Score;
     const status=req.body.status;
-    const Entry_Time=req.body.ENtry_Time;
+    const Entry_Time=req.body.Entry_Time;
     if(status==="true"){
       db.query(
         "INSERT into Student_Classes (ClassID,ProductID,StudentID,Quiz_Score,Date_Time,TeacherID,Entry_Time) Values(?,?,?,?,?,?,?)",
